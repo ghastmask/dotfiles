@@ -1,0 +1,55 @@
+[color]
+  diff = auto
+  branch = auto
+  status = true
+  grep = auto
+[color "status"]
+  added = green
+  changed = cyan
+  untracked = yellow
+
+[alias]
+logo = "log --oneline"
+logone = "!sh -c \"git log --oneline | head -n1\""
+s = "status"
+# If you have uncommitted local changes, stash those changes, pull changes from the origin, then unstash your changes
+sup = "!f() { stash_msg=$(git stash save 'auto stash by git-sup') && git pull --rebase && [ \"$stash_msg\" == \"No local changes to save\" ] || git stash pop -q ; }; f"
+# Pull all branches updates from the server
+up = pull --rebase
+# Tells you what the current branch is
+current = "!sh -c \"git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \\(.*\\)/\\1/'\""
+wu = "!sh -c \"git log --stat origin/\\`git current\\`..@{0}\""
+wup = "!sh -c \"git log -p origin/\\`git current\\`..@{0}\""
+# Push changes only for the current branch
+psh = "!sh -c \"git push origin \\`git current\\`\""
+# Push changes only for the current branch if the branch you're working has been updated on the origin
+pshf = "!sh -c \"git push -f origin \\`git current\\`\""
+# Pretty format to the log
+hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+# See the diff between local changes and the origin
+d = diff develop --
+# Pretty print the changes
+changes = "log --pretty=format:\"%h %ad | %s [%an]\" --stat --date=short HEAD@{1}.."
+# Print current working directory
+root = "!pwd"
+# Show
+ss = status -uno
+# Reset locally committed changes
+uncommit = reset --soft HEAD^
+# Visual diff
+vd = difftool
+# Show files that have not been pushed to the origin
+unpushed = !"PROJ_BRANCH=$(git symbolic-ref HEAD | sed 's|refs/heads/||') && git log origin/$PROJ_BRANCH..HEAD"
+# Show changes that have not been pulled
+unpulled = !"PROJ_BRANCH=$(git symbolic-ref HEAD | sed 's|refs/heads/||') && git fetch && git log HEAD..origin/$PROJ_BRANCH"
+
+[push]
+  default = current
+
+[diff]
+  tool = vimdiff
+
+[difftool]
+  prompt = false
+[rerere]
+  enabled = 1
